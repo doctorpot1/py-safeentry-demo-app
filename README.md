@@ -20,6 +20,15 @@ It is easier to update my code when there is any update in the original code.
 
 ## <a name="how-to-use"></a>1. How To Use
 
+### 1.0 Python Language
+
+Please use Python v3.x and up. If you are using Python v2.x some syntax would not work and need to be refactored again. 
+
+To check your python version run:
+```
+python --version
+```
+
 ### 1.1 Install pre-requisite library
 
 Run the following command in your virtual environment where the app reside:
