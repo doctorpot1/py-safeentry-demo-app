@@ -1,4 +1,3 @@
-import json
 import sys
 
 import config
@@ -29,4 +28,11 @@ data = {
 # Testing data - END
 
 if __name__ == '__main__':
-	apiType = str(sys.argv[1])
+	apiType = str(sys.argv[2])
+	if apiType == "entry":
+		# Call SE Entry API
+		result = api.callEntry(data, config)
+		if result['success']:
+			print("Success! \nBody:")
+		else:
+			print("Error! \nBody: ",result['data'])
