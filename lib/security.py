@@ -1,10 +1,7 @@
-import json
 import uuid
 import time
 from urllib.parse import urlencode
-from jwcrypto import jwk, jws
-from jwcrypto.common import json_encode
-from base64 import b64encode, b64decode
+from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA256
