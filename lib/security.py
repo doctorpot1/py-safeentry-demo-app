@@ -4,7 +4,10 @@ import time
 from urllib.parse import urlencode
 from jwcrypto import jwk, jws
 from jwcrypto.common import json_encode
-import base64
+from base64 import b64encode, b64decode
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
+from Crypto.Hash import SHA256
 
 security = {}
 
@@ -56,27 +59,21 @@ def generateSHA256withRSAHeader(url, params, method, appId, keyCertContent, keyC
 	print(baseString)
 
 	# C) Signing Base String to get Digital Signature
-	with open(keyCertContent, "rb") as pemfile:
-		key = jwk.JWK.from_pem(pemfile.read())
-		jwstoken = jws.JWS(baseString)
-		if keyCertPassphrase is not None and keyCertPassphrase is not None:
-			#to decrypt the key first
-			pass
-		jwstoken.add_signature(key, None, json_encode({"alg": "RS256"}))
-		signature = json.loads(jwstoken.serialize())
+	key = RSA.import_key(open(keyCertContent).read())
+	signer = PKCS1_v1_5.new(key)
+	digest = SHA256.new()
+	# It's being assumed the data is base64 encoded, so it's decoded before updating the digest
+	digest.update(baseString.encode('utf-8'))
+	signature = b64encode(signer.sign(digest)).decode('utf-8')
 
 	print("Digital Signature:")
 	print(signature)
-
-	print("\n\n")
-
 
 	# D) Assembling the Header
 	strApexHeader = "PKI_SIGN timestamp=\"" + str(timestamp) +\
 					"\",nonce=\"" + str(nonceValue) +\
 					"\",app_id=\"" + appId +\
 					"\",signature_method=\"RS256\"" +\
-					",signature=\"" + signature['signature'] +\
+					",signature=\"" + signature +\
 					"\""
-	print(strApexHeader)
 	return strApexHeader
